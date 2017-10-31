@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import NewBookForm from '../NewBookForm';
 import BookList from '../BookList';
+import AppTitle from '../../components/BookListAppTitle';
 import {
   getBooksFromFakeXHR,
   addBookToFakeXHR,
@@ -21,10 +22,12 @@ class App extends Component {
       title: bookTitle,
       author: bookAuthor
     }
-
-    this.setState({
-      books: [...this.state.books, newBook]
-    });
+    addBookToFakeXHR(newBook)
+    .then(() => {
+      this.setState({
+        books: [...this.state.books]
+      });
+    })
   }
 
   componentWillMount(){
@@ -43,12 +46,16 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+
+        <AppTitle title="Reactive Book List"/>
+
+        <BookList books={this.state.books} />
+
         <NewBookForm
           prompt="Fill in Title and Author"
           addNewBook={this.addNewBook.bind(this)}
         />
 
-        <BookList books={this.state.books} />
 
       </div>
     );

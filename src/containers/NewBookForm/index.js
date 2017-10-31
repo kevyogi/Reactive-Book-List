@@ -30,7 +30,7 @@ class NewBookForm extends Component{
   render(){
     return (
       <div>
-        <h2>{this.props.prompt}</h2>
+        <h4>{this.props.prompt}</h4>
         <form onSubmit={this.handleSubmit.bind(this)}>
           <input type="text" placeholder="title" onChange={this.handleChangeTitle.bind(this)} />
           <input type="text" placeholder="author" onChange={this.handleChangeAuthor.bind(this)}/>
