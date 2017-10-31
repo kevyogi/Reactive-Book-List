@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import NewBookForm from '../NewBookForm';
 import BookList from '../BookList';
 import AppTitle from '../../components/BookListAppTitle';
+import BookFilterInput from '../../components/BookFilterInput';
 import {
   getBooksFromFakeXHR,
   addBookToFakeXHR,
@@ -12,8 +13,13 @@ class App extends Component {
   constructor(){
     super();
 
+    this.setFilter = this.setFilter.bind(this);
+
     this.state = {
-      books: []
+      books: [],
+      testBooks: [],
+      filteredBooks: [],
+      AppTitle: 'Reactive Book List'
     }
   }
 
@@ -25,16 +31,35 @@ class App extends Component {
     addBookToFakeXHR(newBook)
     .then(() => {
       this.setState({
-        books: [...this.state.books]
+        books: [...this.state.books],
+        testBooks: [...this.state.books]
       });
     })
+  }
+
+  setFilter(event){
+    if(event.target.value){
+      let filteredBooks = this.state.books.filter((book) => {
+        let title = book.title.toLowerCase();
+        let author = book.author.toLowerCase();
+        return title.includes((event.target.value).toLowerCase()) || author.includes((event.target.value).toLowerCase());
+      });
+      this.setState({
+        testBooks: filteredBooks
+      });
+    }else{
+      this.setState({
+        testBooks: [...this.state.books]
+      })
+    }
   }
 
   componentWillMount(){
     getBooksFromFakeXHR()
     .then((fakeBooks) => {
       this.setState({
-        books: fakeBooks
+        books: fakeBooks,
+        testBooks: fakeBooks
       })
     })
   }
@@ -47,9 +72,11 @@ class App extends Component {
     return (
       <div className="App">
 
-        <AppTitle title="Reactive Book List"/>
+        <AppTitle title={this.state.AppTitle}/>
 
-        <BookList books={this.state.books} />
+        <BookFilterInput setFilter={this.setFilter}/>
+
+        <BookList books={this.state.testBooks} />
 
         <NewBookForm
           prompt="Fill in Title and Author"
