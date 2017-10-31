@@ -17,7 +17,7 @@ class App extends Component {
 
     this.state = {
       books: [],
-      testBooks: [],
+      displayBooks: [],
       filteredBooks: [],
       AppTitle: 'Reactive Book List'
     }
@@ -31,8 +31,8 @@ class App extends Component {
     addBookToFakeXHR(newBook)
     .then(() => {
       this.setState({
-        books: [...this.state.books],
-        testBooks: [...this.state.books]
+        books: this.state.books,
+        displayBooks: this.state.books
       });
     })
   }
@@ -45,26 +45,26 @@ class App extends Component {
         return title.includes((event.target.value).toLowerCase()) || author.includes((event.target.value).toLowerCase());
       });
       this.setState({
-        testBooks: filteredBooks
+        displayBooks: filteredBooks
       });
     }else{
       this.setState({
-        testBooks: [...this.state.books]
+        displayBooks: this.state.books
       })
     }
   }
 
   componentWillMount(){
+  }
+
+  componentDidMount(){
     getBooksFromFakeXHR()
     .then((fakeBooks) => {
       this.setState({
         books: fakeBooks,
-        testBooks: fakeBooks
+        displayBooks: fakeBooks
       })
     })
-  }
-
-  componentDidMount(){
 
   }
 
@@ -76,7 +76,7 @@ class App extends Component {
 
         <BookFilterInput setFilter={this.setFilter}/>
 
-        <BookList books={this.state.testBooks} />
+        <BookList books={this.state.displayBooks} />
 
         <NewBookForm
           prompt="Fill in Title and Author"

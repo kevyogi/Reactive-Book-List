@@ -25,6 +25,10 @@ class NewBookForm extends Component{
   handleSubmit(event){
     event.preventDefault();
     this.props.addNewBook(this.state.titleInput, this.state.authorInput);
+    this.setState({
+      titleInput: '',
+      authorInput: ''
+    })
   }
 
   render(){
@@ -32,8 +36,8 @@ class NewBookForm extends Component{
       <div>
         <h4>{this.props.prompt}</h4>
         <form onSubmit={this.handleSubmit.bind(this)}>
-          <input type="text" placeholder="title" onChange={this.handleChangeTitle.bind(this)} />
-          <input type="text" placeholder="author" onChange={this.handleChangeAuthor.bind(this)}/>
+          <input type="text" placeholder="title" value={this.state.titleInput} onChange={this.handleChangeTitle.bind(this)} />
+          <input type="text" placeholder="author" value={this.state.authorInput} onChange={this.handleChangeAuthor.bind(this)}/>
           <input type="submit" value="Submit"/>
         </form>
       </div>
