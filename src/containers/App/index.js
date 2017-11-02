@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { loadBooks } from '../../actions/books';
 import NewBookForm from '../NewBookForm';
 import BookList from '../BookList';
 import AppTitle from '../../components/BookListAppTitle';
 import BookFilterInput from '../../components/BookFilterInput';
-import {
-  getBooksFromFakeXHR,
-  addBookToFakeXHR,
-  getBookByIdFromFakeXHR
-} from '../../lib/books.db.js';
+
 
 class App extends Component {
   constructor(){
@@ -23,19 +21,19 @@ class App extends Component {
     }
   }
 
-  addNewBook(bookTitle, bookAuthor){
-    let newBook = {
-      title: bookTitle,
-      author: bookAuthor
-    }
-    addBookToFakeXHR(newBook)
-    .then(() => {
-      this.setState({
-        books: this.state.books,
-        displayBooks: this.state.books
-      });
-    })
-  }
+  //addNewBook(book){
+    // let newBook = {
+    //   title: bookTitle,
+    //   author: bookAuthor
+    // }
+    // addBookToFakeXHR(newBook)
+    // .then(() => {
+    //   this.setState({
+    //     books: this.state.books,
+    //     displayBooks: this.state.books
+    //   });
+    // })
+  //}
 
   setFilter(event){
     if(event.target.value){
@@ -58,17 +56,22 @@ class App extends Component {
   }
 
   componentDidMount(){
-    getBooksFromFakeXHR()
-    .then((fakeBooks) => {
-      this.setState({
-        books: fakeBooks,
-        displayBooks: fakeBooks
-      })
-    })
+    this.props.loadBooks()
+
+    // getBooksFromFakeXHR()
+    // .then((fakeBooks) => {
+    //   console.log('invoking function loadBooks in props')
+    //   this.props.loadBooks(fakeBooks)
+    //   // this.setState({
+    //   //   books: fakeBooks,
+    //   //   displayBooks: fakeBooks
+    //   // })
+    // })
 
   }
 
   render() {
+    console.log('line 74', this.props.books);
     return (
       <div className="App">
 
@@ -76,17 +79,38 @@ class App extends Component {
 
         <BookFilterInput setFilter={this.setFilter}/>
 
-        <BookList books={this.state.displayBooks} />
+        <BookList books={this.props.books} />
 
         <NewBookForm
-          prompt="Fill in Title and Author"
-          addNewBook={this.addNewBook.bind(this)}
+          // prompt="Fill in Title and Author"
+          // addNewBook={this.addNewBook.bind(this)}
         />
-
 
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    books: state.bookList
+  }
+}
+
+//if action is async you don't need to dispatch again by loadBooks
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadBooks: () => {
+      console.log('dispatching the action')
+      dispatch(loadBooks());
+    }
+  }
+}
+
+const ConnectedApp = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
+
+export default ConnectedApp;
+

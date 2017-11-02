@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { addBook } from '../../actions/books';
 
 class NewBookForm extends Component{
   constructor(props){
@@ -24,7 +26,11 @@ class NewBookForm extends Component{
 
   handleSubmit(event){
     event.preventDefault();
-    this.props.addNewBook(this.state.titleInput, this.state.authorInput);
+    let newBook = {
+      title: this.state.titleInput,
+      author: this.state.authorInput
+    }
+    this.props.addBook(newBook);
     this.setState({
       titleInput: '',
       authorInput: ''
@@ -32,6 +38,7 @@ class NewBookForm extends Component{
   }
 
   render(){
+    console.log(this.props.addBook);
     return (
       <div>
         <h4>{this.props.prompt}</h4>
@@ -46,4 +53,17 @@ class NewBookForm extends Component{
 
 }
 
-export default NewBookForm;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addBook: (book) => {
+      dispatch(addBook(book))
+    }
+  }
+}
+
+const ConnectedNewBookForm = connect(
+  null,
+  mapDispatchToProps
+)(NewBookForm)
+
+export default ConnectedNewBookForm;
